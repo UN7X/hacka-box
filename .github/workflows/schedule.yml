@@ -9,7 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+      - name: Skip when required secrets are missing
+        if: ${{ secrets.GH_TOKEN == '' || secrets.GIST_ID == '' || secrets.WAKATIME_API_KEY == '' }}
+        run: echo "::notice::Skipping gist update because GH_TOKEN, GIST_ID, or WAKATIME_API_KEY is not configured."
       - name: Update gist
+        if: ${{ secrets.GH_TOKEN != '' && secrets.GIST_ID != '' && secrets.WAKATIME_API_KEY != '' }}
         uses: quackclub/hacka-box@main
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
